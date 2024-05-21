@@ -14,10 +14,10 @@ CORS(app)
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['PATH'] = os.path.dirname(os.path.realpath(__file__))
 
-@app.route("/" , methods = ["POST"])
+@app.route("/")
 def check():
     print("server on")
-    return(jsonify({"messege":"accepted"}),200)
+    return(jsonify({'success': 'api connected successfully'}),200)
 
 
 
