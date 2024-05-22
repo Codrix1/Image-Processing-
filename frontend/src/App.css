@@ -1,11 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*{
+  font-family: poppins,sans-serif;
+}
 .App {
   color: white;
   -webkit-user-select: none; 
   -ms-user-select: none; 
   user-select: none; 
-  font-family: poppins,sans-serif;
+  
 }
-
+h1{
+  position: absolute;
+  top: 2%;
+  left: 42%;
+}
+.under p{
+  z-index: -100;
+}
 #particles canvas{
   z-index: -3;
   height:100%;
@@ -20,11 +31,16 @@
   justify-content: center;
   align-items: center;
 }
+
 .containers {
   width: 42vw;
   margin-right: 5vw;
+  position: absolute;
+  padding: 15px;
+  top:20%;
+  left: 5%;
   border-radius: 20px;
-  background-color: rgba(245, 230, 211, 0.229);
+  background-color: rgba(21, 21, 21, 0);
   display: flex;
   justify-content: center;
   align-items: top;
@@ -32,12 +48,15 @@
   
 }
 .containers2 {
-  
+  position:absolute;
+  padding: 15px;
+  top:20%;
+  right: 2%;
   border-radius: 20px;
-  background-color: rgba(245, 230, 211, 0.229);
+  background-color: rgba(245, 230, 211, 0);
   display: flex;
   flex-direction: column;
-  padding: 13px;
+ 
   
 }
 .sub_containters{
@@ -51,7 +70,7 @@
 
 .button {
   margin: 10px;
-  background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
+  background: linear-gradient(to bottom right, #460042c8, #9e3e96);
   border: 0;
   border-radius: 12px;
   color: #FFFFFF;
@@ -74,16 +93,28 @@
   text-align:center;
 }
 
+.n1{
+  left:2%;
+}
+
+.n2{
+  left:16.7%;
+}
+.n3{
+  left:30%;
+}
 .button_upload{
+  position: absolute;
+  top: 85%;
+  background: linear-gradient(to bottom right, #460042c8, #9e3e96);
+  justify-content: center;
+  border:none;
+  color: #ffffff;
   margin: 10px;
-  background: linear-gradient(to bottom right, #2a1bc7, #5feb55ad);
-  border: 0;
-  border-radius: 12px;
-  color: #FFFFFF;
   cursor: pointer;
+  border-radius: 20px;
   display: inline-block;
-  font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 2.5;
   outline: transparent;
@@ -97,7 +128,10 @@
 }
 
 .button:hover {
-  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgb(204, 0, 255), .125rem .125rem 1rem rgb(255, 255, 255);
+}
+.button_upload:hover {
+  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgb(204, 0, 255), .125rem .125rem 1rem rgb(255, 255, 255);
 }
 
 /* Modal.css */
@@ -146,7 +180,7 @@ label {
 }
 
 .image {
-  max-width: 100%;
+  max-width: 80vh;
   max-height: 400px;
   margin-bottom: 16px;
   margin-right: 10px;
@@ -165,7 +199,7 @@ label {
   background-color: darkblue;
 }
 .close-button:hover {
-  background-color: rgb(253, 84, 84);
+  background-color: rgb(255, 255, 255);
   position: absolute;
   top: 8px;
   right: 8px;
@@ -187,23 +221,42 @@ label {
 
 /*--------------------------------------------------------*/
 
+.image-container2 {
+  display: flex;
+  position: absolute;
+  left: 690px;
+  margin-top: 600px;
+  width: 40%;
+  z-index: 50;
+  top: 1%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .image-container {
-    padding: 10%;
+    display: flex;
+    position: absolute;
+    left: 690px;
+    margin-top: 150px;
+    width: 40%;
     z-index: 50;
     top: 1%;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    padding: 0px;
+    flex-direction: column;
 }
 
-.image-container img {
+.image-container2 img, .image-container img {
+    border-radius: 15px;
+    border: 5px solid #e0ade7;
     margin-top: 1%;
-    max-width: 80vh;
-    max-height: 20%;
+    align-self: center;
+    justify-content: center;
+    width: 400px;
     height: auto;
-    width: auto;
 }
 
 .button-container {

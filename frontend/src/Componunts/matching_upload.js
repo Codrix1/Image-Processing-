@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import { useState } from "react";
 
-const ImageUpload = () => {
+const Matching_upload = () => {
+
     const [selectedFile, setSelectedFile] = useState(null);
     const [message, setMessage] = useState('');
     const [imageUrl, setImageUrl] = useState(null);
@@ -11,7 +13,7 @@ const ImageUpload = () => {
     }, []);
 
     const fetchImage = () => {
-        fetch('http://127.0.0.1:5000/get_Original')
+        fetch('http://127.0.0.1:5000/get_reference')
             .then(response => response.blob())
             .then(blob => {
                 const url = URL.createObjectURL(blob);
@@ -36,7 +38,7 @@ const ImageUpload = () => {
         const formData = new FormData();
         formData.append('file', file);
 
-        fetch('http://127.0.0.1:5000/upload', {
+        fetch('http://127.0.0.1:5000/upload_reference', {
             method: 'POST',
             body: formData,
         })
@@ -58,25 +60,7 @@ const ImageUpload = () => {
         });
     };
 
-    const onEditClick = () => {
-        fetch('http://127.0.0.1:5000/edit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({}) // Send any required data here
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                setMessage('Image edited successfully');
-                fetchImage(); // Refresh the image
-            } else {
-                setMessage(data.error || 'Image edit failed');
-            }
-        })
-        .catch(error => {
-            setMessage('Image edit failed');
-        });
-    };
+  
 
     const onButtonClick = () => {
         fileInputRef.current.click();
@@ -84,8 +68,8 @@ const ImageUpload = () => {
 
     return (
         <div>
-            <div className="image-container">
-                <h3 className="Center">Original Image</h3>
+            <div className="image-container2">
+                <h3 className="Center">Reference Image</h3>
                 {imageUrl && <img src={imageUrl} alt="Uploaded" />}
             </div>
             <div className="button-container">
@@ -95,11 +79,8 @@ const ImageUpload = () => {
                     style={{ display: 'none' }}
                     onChange={onFileChange}
                 />
-                <button className="button_upload n2" onClick={onButtonClick}>
-                    Select Original
-                </button>
-                <button className="button_upload n3" onClick={onEditClick}>
-                    Apply Filter
+                <button className="button_upload n1" onClick={onButtonClick}>
+                    Select Reference
                 </button>
             </div>
             {message && <div className="message-popup">{message}</div>}
@@ -107,4 +88,4 @@ const ImageUpload = () => {
     );
 };
 
-export default ImageUpload;
+export default Matching_upload;

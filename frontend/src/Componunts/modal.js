@@ -5,11 +5,15 @@ function Modal({ source }) {
   const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [inputValues, setInputValues] = useState({
-    Window_Size: '3', // Default value for Window_Size
-    option1: '',
-    option2: ''
+     Window_Size: '3', 
+      Mean:  '0',
+      Standerd_deviation: '20', 
+      K_value:  '1' ,
+      Sigma: '1', 
+      Level: '0',
+      type:  '2',
+      Resize: '0'
   });
-  const [errors, setErrors] = useState({}); // State to manage validation errors
 
   useEffect(() => {
     if (source) {
@@ -36,19 +40,9 @@ function Modal({ source }) {
     });
   };
 
-  const validateInputs = () => {
-    const newErrors = {};
-    Object.keys(inputValues).forEach((key) => {
-      if (!/^\d*$/.test(inputValues[key])) {
-        newErrors[key] = 'This field must be a number';
-      }
-    });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  
 
   const handleFetchImage = async () => {
-    if (!validateInputs()) return;
 
     setLoading(true);
     setImageUrl(''); // Clear previous image
@@ -59,8 +53,15 @@ function Modal({ source }) {
       Window_Size: inputValues.Window_Size || '3', 
       Mean: inputValues.Mean || '0',
       Standerd_deviation: inputValues.Standerd_deviation || '20', 
-      K_value: inputValues.K_value || '1' 
-
+      K_value: inputValues.K_value || '1' ,
+      Sigma: inputValues.Sigma || '1', 
+      Level: inputValues.Level || '0',
+      type: inputValues.type || '2',
+      Resize: inputValues.Resize || '0' ,
+      salt: inputValues.salt || '0.05' ,
+      pepper: inputValues.pepper || '0.05', 
+      modet: inputValues.modet
+      
     };
 
     console.log("Sending request with values:", valuesToSend);
@@ -92,12 +93,11 @@ function Modal({ source }) {
             <label>
               Window Size:
               <input
-                type="number"
+                type="text"
                 name="Window_Size"
                 value={inputValues.Window_Size}
                 onChange={handleInputChange}
               />
-              {errors.Window_Size && <span className="error-message">{errors.Window_Size}</span>}
             </label>
           </>
         );
@@ -107,29 +107,62 @@ function Modal({ source }) {
             <label>
               Standerd deviation:
               <input
-                type="number"
+                type="text"
                 name="Standerd_deviation"
                 value={inputValues.Standerd_deviation}
                 onChange={handleInputChange}
-                min="1"
-                max="150"
               />
-              {errors.Standerd_deviation && <span className="error-message">{errors.Standerd_deviation}</span>}
             </label>
             <label>
               Mean:
               <input
-                type="number"
+                type="text"
                 name="Mean"
                 value={inputValues.Mean}
                 onChange={handleInputChange}
-                min="0"
-                max ="20"
               />
-              {errors.Mean && <span className="error-message">{errors.Mean}</span>}
             </label>
           </>
         );
+
+      case 'Gaussian':
+        return (
+          <>
+            <label>
+              Window Size:
+              <input
+                type="text"
+                name="Window_Size"
+                value={inputValues.Window_Size}
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              Sigma:
+              <input
+                type="text"
+                name="Sigma"
+                value={inputValues.Sigma}
+                onChange={handleInputChange}
+              />
+            </label>
+          </>
+        );
+      case 'Uniform_noise':
+        return (
+          <>
+            <label>
+              Level:
+              <input
+                type="text"
+                name="Level"
+                value={inputValues.Level}
+                onChange={handleInputChange}
+              />
+            </label>
+          </>
+        );
+        
       case 'Unsharp_Masking_and_Highboost':
         return (
           <>
@@ -141,39 +174,116 @@ function Modal({ source }) {
                 value={inputValues.K_value}
                 onChange={handleInputChange}
               />
-              {errors.K_value && <span className="error-message">{errors.K_value}</span>}
             </label>
+            
           </>
         );
-      case 'filter2':
+
+      case 'Impulse_noise':
         return (
           <>
             <label>
-              Option 1:
-              <select
-                name="option1"
-                value={inputValues.option1}
+              salt:
+              <input
+                type="text"
+                name="salt"
+                value={inputValues.salt}
                 onChange={handleInputChange}
-              >
-                <option value="">Select an option</option>
-                <option value="optionA">Option A</option>
-                <option value="optionB">Option B</option>
-              </select>
-              {errors.option1 && <span className="error-message">{errors.option1}</span>}
+              />
             </label>
+            
             <label>
-              Option 2:
+              pepper:
+              <input
+                type="text"
+                name="pepper"
+                value={inputValues.pepper}
+                onChange={handleInputChange}
+              />
+            </label>
+            
+          </>
+        );
+      
+      case 'Interpolation':
+        return (
+          <>
+            <label>
+              Resize:
+              <input
+                type="test"
+                name="Resize"
+                value={inputValues.Resize}
+                onChange={handleInputChange}
+              />
+            </label>
+
+            <label>
+              Type:
               <select
-                name="option2"
-                value={inputValues.option2}
+                name="type"
+                value={inputValues.type}
                 onChange={handleInputChange}
               >
-                <option value="">Select an option</option>
-                <option value="optionC">Option C</option>
-                <option value="optionD">Option D</option>
+                <option value="nearest_neighbor">nearest_neighbor</option>
+                <option value="bilinear">bilinear</option>
               </select>
-              {errors.option2 && <span className="error-message">{errors.option2}</span>}
             </label>
+            
+          </>
+        );
+
+      
+      case 'sobya':
+        return (
+          <>
+            <label>
+              mode:
+              <select
+                name="modet"
+                value={inputValues.modet}
+                onChange={handleInputChange}
+              >
+                <option value="mask">mask</option>
+                <option value="mask_image">mask+image</option>
+              </select>
+            </label>
+            
+          </>
+        );
+
+      case 'Laplacian':
+        return (
+          <>
+            <label>
+              mode:
+              <select
+                name="modet"
+                value={inputValues.modet}
+                onChange={handleInputChange}
+              >
+                <option value="mask">mask</option>
+                <option value="mask_image">mask+image</option>
+              </select>
+            </label>
+            
+          </>
+        );
+      case 'Roberts_Cross_Gradient':
+        return (
+          <>
+            <label>
+              mode:
+              <select
+                name="modet"
+                value={inputValues.modet}
+                onChange={handleInputChange}
+              >
+                <option value="mask">mask</option>
+                <option value="mask_image">mask+image</option>
+              </select>
+            </label>
+            
           </>
         );
       default:
