@@ -26,6 +26,9 @@ def check():
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
+
+#--------------------------------------------------------------------------------------#
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -44,6 +47,32 @@ def upload_file():
             file.seek(0) 
             filename = 'original.jpg'
             file.save(os.path.join(app.config['PATH'], 'original.jpg'))
+            return jsonify({'success': 'File uploaded successfully', 'filename': filename}), 200
+        except (IOError, SyntaxError) as e:
+            return jsonify({'error': 'File is not a valid image'}), 400
+    else:
+        return jsonify({'error': 'File type not allowed'}), 400
+
+#--------------------------------------------------------------------------------------#
+
+@app.route('/upload_reference', methods=['POST'])
+def upload_file_referenc():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file and allowed_file(file.filename):
+        try:
+            image = Image.open(io.BytesIO(file.read()))
+            image.verify()
+            
+            file.seek(0) 
+            filename = 'original.jpg'
+            file.save(os.path.join(app.config['PATH'], 'reference.jpg'))
             return jsonify({'success': 'File uploaded successfully', 'filename': filename}), 200
         except (IOError, SyntaxError) as e:
             return jsonify({'error': 'File is not a valid image'}), 400
@@ -70,6 +99,11 @@ def getOriginal():
     return send_file('original.jpg', mimetype='image/jpg' , as_attachment=True ) 
 
 #--------------------------------------------------------------------------------------#
+@app.route("/get_reference")
+def getOriginal_referenc():
+    return send_file('reference.jpg', mimetype='image/jpg' , as_attachment=True ) 
+
+#--------------------------------------------------------------------------------------#
 
 @app.route("/filters/<string:filter>" , methods = ["POST"])
 def handle_json(filter ) :
@@ -78,26 +112,28 @@ def handle_json(filter ) :
     match filter:
         case "Median":
             Window_size = int(data.get('Window_Size'))
-            if Window_size < 3  or Window_size > 12: 
-                Window_size = 3
+            if Window_size < 3  or Window_size > 12: Window_size = 3
             Median(Window_size)  
         
         case "Adaptive":
             Window_size = int(data.get('Window_Size'))
-            if Window_size < 3  or Window_size > 12: 
-                Window_size = 3
+            if Window_size < 3  or Window_size > 12: Window_size = 3
             adaptive_median_filter(Window_size)      
         
         case "Averaging":
             Window_size = int(data.get('Window_Size'))
-            if Window_size < 3  or Window_size > 12: 
-                Window_size = 3
+            if Window_size < 3  or Window_size > 12: Window_size = 3
             Averaging(Window_size)  
         
         case "Gaussian_noise":
-            Mean = int(data.get('Mean'))
-            Standerd_deviation = int(data.get('Standerd_deviation'))
+            Mean = float(data.get('Mean'))
+            Standerd_deviation = float(data.get('Standerd_deviation'))
             create_gaussian_noise(Mean, Standerd_deviation)
+            
+        case "Uniform_noise":
+            Level = int(data.get('Level'))
+            if Level < 1  or Level > 150: Level = 1
+            add_uniform_noise(Level)
             
         case "Unsharp_Masking_and_Highboost":
             k = float(data.get('K_value'))
@@ -105,11 +141,59 @@ def handle_json(filter ) :
             unsharp_masking_and_highboost_filtering(k)
             print(k)
             
+        case "Gaussian":
+            Window_size = int(data.get('Window_Size'))
+            Sigma = float(data.get('Sigma'))
+            if Window_size < 3  or Window_size > 12: Window_size = 3
+            if Sigma < 1 or Window_size > 2: Sigma = 1
+
+            gaussian_filter(Window_size , Sigma)
+            
+        case "Interpolation":
+            type = str(data.get('type'))
+            Resize = int(data.get('Resize'))
+            if Resize < 1  or Resize > 4: Resize = 2
+            print(type)
+            if type == "nearest_neighbor": interpolation_nearest_neighbor(Resize)
+            if type == "bilinear" : interpolation_bilinear(Resize)
+        
+        case "Laplacian":
+            mode = str(data.get('modet'))
+            print(data)
+            apply_laplacian_operator()
+            if mode =="mask_image": add_images()
+            
+        case "sobya":
+            mode = str(data.get('modet'))
+            sobya()
+            if mode =="mask_image": add_images()
+           
+        case "Roberts_Cross_Gradient":
+            mode = str(data.get('modet'))
+            apply_roberts_operator()
+            if mode =="mask_image": add_images()
+           
+        case "Histogram_Equalization":
+            histogram_equalization()
+            
+        case "Histogram_Specification":
+            histogram_specification()
+            
+        
+        case "Impulse_noise":
+            salt = float(data.get('salt'))
+            pepper = float(data.get('pepper'))
+            if salt < 0.01  or salt > 0.4: salt = 0.05
+            if pepper < 0.01  or pepper > 0.4: pepper = 0.05
+            print(salt , pepper)
+            apply_impulse_noise(salt , pepper)
+        
+            
             
         case _ :
             print("filter not done")
             return jsonify({"messege":"filter not yet added"}),202 
-    
+        
     return send_file('manipulatedImage.jpg', mimetype='image/jpg' , as_attachment=True ) 
         
             
