@@ -178,7 +178,9 @@ def handle_json(filter ) :
             
         case "Histogram_Specification":
             histogram_specification()
-            
+        
+        case "Fourier_transform":
+            fourier()    
         
         case "Impulse_noise":
             salt = float(data.get('salt'))

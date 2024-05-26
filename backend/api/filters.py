@@ -3,6 +3,7 @@ import os
 import cv2
 import numpy as np
 import random
+import cmath
 #--------------------------------------------------------#
 #--------------------------------------------------------------------------------#   
 # Get the current script directory
@@ -423,3 +424,46 @@ def add_images():
     WriteImage(result_image)
     return 
 #--------------------------------------------------------------------------------#
+def fourier():
+    def dft_2d(image):
+        M, N = image.shape
+        F = np.zeros((M, N), dtype=complex)
+
+        for u in range(M):
+            for v in range(N):
+                sum_val = 0.0 + 0.0j
+                for x in range(M):
+                    for y in range(N):
+                        angle = -2j * cmath.pi * ((u * x / M) + (v * y / N))
+                        sum_val += image[x, y] * cmath.exp(angle)
+                F[u, v] = sum_val
+        return F
+
+    def shift_frequency(F):
+        M, N = F.shape
+        shifted_F = np.zeros_like(F, dtype=complex)
+
+        for u in range(M):
+            for v in range(N):
+                shifted_F[u, v] = F[u, v] * ((-1) ** (u + v))
+
+        return shifted_F
+
+    def save_spectrum(F):
+        magnitude_spectrum = np.log(np.abs(F) + 1)
+        magnitude_spectrum_normalized = cv2.normalize(magnitude_spectrum, None, 0, 255, cv2.NORM_MINMAX)
+        WriteImage(magnitude_spectrum_normalized)
+
+    def main(image_path):
+        ini = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        up_width = 70
+        up_height = 70
+        up_points = (up_width, up_height)
+        image = cv2.resize(ini, up_points, interpolation= cv2.INTER_LINEAR)
+        F = dft_2d(image)
+        shifted_F = shift_frequency(F)
+        save_spectrum(shifted_F)
+
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    input_image_path = os.path.join(script_dir, 'original.jpg')
+    main(input_image_path)
