@@ -21,6 +21,18 @@ def WriteImage(Edited_image):
 
 #--------------------------------------------------------#
 
+def DFT(image):
+    M, N = image.shape
+    dft = np.zeros((M, N), dtype=complex)
+    for u in range(M):
+        for v in range(N):
+            sum_val = 0
+            for x in range(M):
+                for y in range(N):
+                    sum_val += image[x, y] * np.exp(-2j * np.pi * ((u * x) / M + (v * y) / N))
+            dft[u, v] = sum_val
+    return dft
+
 def Median(Kernel):
     image = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
     img = image.copy()
@@ -36,7 +48,7 @@ def Median(Kernel):
                             temp.append(image[ni, nj, channel])
                         else:
                             temp.append(0)  # Pad with zero
-                print(temp)
+                #print(temp)
                 temp.sort()
                 img[i, j, channel] = temp[len(temp) // 2]
     
@@ -60,7 +72,7 @@ def Averaging(Kernel):
                             temp.append(image[ni, nj, channel])
                         else:
                             temp.append(0) 
-                print(pad_size)
+                #print(pad_size) 
                 img[i][j][channel] = int(sum(temp)/(Kernel*Kernel))
     WriteImage(img)
     return 
@@ -100,13 +112,13 @@ def unsharp_masking_and_highboost_filtering(k_value):
 #--------------------------------------------------------------------------------#       
 def adaptive_median_filter(passed_window_size):
     image = cv2.imread(input_image_path)
-    img = image.copy()
-    s_max = 12
-    window_size = passed_window_size
+    img = image.copy().astype(int)
+    s_max = 9
     filtered_image = np.zeros(img.shape, dtype="uint8")
     for channel in range(img.shape[2]):
         for i in range(img.shape[0]):
             for j in range(img.shape[1]):
+                window_size = passed_window_size
                 while window_size <= s_max:
                     temp = []
                     for a in range(-window_size // 2, (window_size // 2) + 1):
@@ -118,7 +130,7 @@ def adaptive_median_filter(passed_window_size):
                     temp.sort()
                     median = temp[int((len(temp) / 2) - 1)]
                     a1 = median - temp[0]
-                    a2 = np.array(median - temp[-1])
+                    a2 = median - temp[-1]
                     if a1 > 0 and a2 < 0:
                         b1 = img[i, j, channel] - temp[0]
                         b2 = img[i, j, channel] - temp[-1]
@@ -128,14 +140,13 @@ def adaptive_median_filter(passed_window_size):
                             filtered_image[i, j, channel] = median
                         break
                     else:
-                        if window_size < 7:
+                        if window_size < s_max:
                             window_size += 2
                         else:
                             filtered_image[i, j, channel] = median
                             break
-                window_size = passed_window_size
     WriteImage(filtered_image)
-    return  
+    return
     
     
     # Read the input image  
@@ -178,21 +189,22 @@ def gaussian_kernel(size, sigma):
             x_center = x - center
             y_center = y - center
             kernel[x, y] = np.exp(-(x_center**2 + y_center**2) / (2 * sigma**2))
-    kernel /= 2 * np.pi * sigma**2
+    #kernel /= 2 * np.pi * sigma**2
+    kernel /= np.sum(kernel)
     return kernel
 
 def gaussian_filter( size, sigma):
     image = cv2.imread(input_image_path)
     pad_size = size // 2
-    padded_image = np.pad(image, pad_size, mode='reflect')
     filtered_image = np.zeros_like(image)
     kernel = gaussian_kernel(size, sigma)
     rows = image.shape[0]
     cols = image.shape[1]
-    for i in range(rows):
-        for j in range(cols):
-            for k in range(image.shape[2]):
-                window = padded_image[i:i+size, j:j+size , k]
+    for k in range(image.shape[2]):
+        padded_image = np.pad(image[:, :, k], pad_size, mode='reflect')
+        for i in range(rows):
+            for j in range(cols):
+                window = padded_image[i:i+size, j:j+size]
                 filtered_image[i, j , k] = np.sum(window * kernel)
     
     WriteImage(filtered_image)
@@ -283,7 +295,7 @@ def sobya():
     sobel_y = np.array([[-1, 0, 1],
                         [-2, 0, 2],
                         [-1, 0, 1]])
-    new_img = np.zeros_like(img)
+    new_img = np.zeros_like(img, dtype=np.float32)
     for channel in range(img.shape[2]):
         for i in range(1, img.shape[0] - 1):
             for j in range(1, img.shape[1] - 1):
@@ -292,6 +304,8 @@ def sobya():
                 gy = np.sum(np.multiply(temp, sobel_y))
                 new_img[i, j, channel] = np.sqrt(gx**2 + gy**2)
     
+    new_img = new_img / new_img.max() * 255
+    new_img = new_img.astype(np.uint8)
     WriteImage(new_img)
     return 
 #--------------------------------------------------------------------------------#
@@ -426,28 +440,10 @@ def add_images():
 #--------------------------------------------------------------------------------#
 def fourier():
     def dft_2d(image):
-        M, N = image.shape
-        F = np.zeros((M, N), dtype=complex)
-
-        for u in range(M):
-            for v in range(N):
-                sum_val = 0.0 + 0.0j
-                for x in range(M):
-                    for y in range(N):
-                        angle = -2j * cmath.pi * ((u * x / M) + (v * y / N))
-                        sum_val += image[x, y] * cmath.exp(angle)
-                F[u, v] = sum_val
-        return F
+        return np.fft.fft2(image)
 
     def shift_frequency(F):
-        M, N = F.shape
-        shifted_F = np.zeros_like(F, dtype=complex)
-
-        for u in range(M):
-            for v in range(N):
-                shifted_F[u, v] = F[u, v] * ((-1) ** (u + v))
-
-        return shifted_F
+        return np.fft.fftshift(F)
 
     def save_spectrum(F):
         magnitude_spectrum = np.log(np.abs(F) + 1)
@@ -456,10 +452,10 @@ def fourier():
 
     def main(image_path):
         ini = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-        up_width = 70
-        up_height = 70
+        up_width = 350
+        up_height = 350
         up_points = (up_width, up_height)
-        image = cv2.resize(ini, up_points, interpolation= cv2.INTER_LINEAR)
+        image = cv2.resize(ini, up_points, interpolation=cv2.INTER_LINEAR)
         F = dft_2d(image)
         shifted_F = shift_frequency(F)
         save_spectrum(shifted_F)

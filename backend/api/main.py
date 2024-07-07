@@ -14,9 +14,8 @@ CORS(app)
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['PATH'] = os.path.dirname(os.path.realpath(__file__))
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def check():
-    print("server on")
     return(jsonify({'success': 'api connected successfully'}),200)
 
 
@@ -29,8 +28,8 @@ def allowed_file(filename):
 
 #--------------------------------------------------------------------------------------#
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
+@app.route('/upload/<string:type>', methods=['POST'])
+def upload_file(type):
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
@@ -45,34 +44,8 @@ def upload_file():
             image.verify()
             
             file.seek(0) 
-            filename = 'original.jpg'
-            file.save(os.path.join(app.config['PATH'], 'original.jpg'))
-            return jsonify({'success': 'File uploaded successfully', 'filename': filename}), 200
-        except (IOError, SyntaxError) as e:
-            return jsonify({'error': 'File is not a valid image'}), 400
-    else:
-        return jsonify({'error': 'File type not allowed'}), 400
-
-#--------------------------------------------------------------------------------------#
-
-@app.route('/upload_reference', methods=['POST'])
-def upload_file_referenc():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-
-    file = request.files['file']
-    
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    if file and allowed_file(file.filename):
-        try:
-            image = Image.open(io.BytesIO(file.read()))
-            image.verify()
-            
-            file.seek(0) 
-            filename = 'original.jpg'
-            file.save(os.path.join(app.config['PATH'], 'reference.jpg'))
+            filename = f'{type}.jpg'
+            file.save(os.path.join(app.config['PATH'], f'{type}.jpg'))
             return jsonify({'success': 'File uploaded successfully', 'filename': filename}), 200
         except (IOError, SyntaxError) as e:
             return jsonify({'error': 'File is not a valid image'}), 400
@@ -94,14 +67,11 @@ def save_edited_image():
 
 
 #--------------------------------------------------------------------------------------#
-@app.route("/get_Original")
-def getOriginal():
-    return send_file('original.jpg', mimetype='image/jpg' , as_attachment=True ) 
+@app.route("/get/<string:type>")
+def getOriginal(type):
+    return send_file(f'{type}.jpg', mimetype='image/jpg' , as_attachment=True ) 
 
-#--------------------------------------------------------------------------------------#
-@app.route("/get_reference")
-def getOriginal_referenc():
-    return send_file('reference.jpg', mimetype='image/jpg' , as_attachment=True ) 
+
 
 #--------------------------------------------------------------------------------------#
 
@@ -139,7 +109,6 @@ def handle_json(filter ) :
             k = float(data.get('K_value'))
             if k < 1: k = 1
             unsharp_masking_and_highboost_filtering(k)
-            print(k)
             
         case "Gaussian":
             Window_size = int(data.get('Window_Size'))
@@ -153,13 +122,11 @@ def handle_json(filter ) :
             type = str(data.get('type'))
             Resize = int(data.get('Resize'))
             if Resize < 1  or Resize > 4: Resize = 2
-            print(type)
             if type == "nearest_neighbor": interpolation_nearest_neighbor(Resize)
             if type == "bilinear" : interpolation_bilinear(Resize)
         
         case "Laplacian":
             mode = str(data.get('modet'))
-            print(data)
             apply_laplacian_operator()
             if mode =="mask_image": add_images()
             
@@ -187,13 +154,11 @@ def handle_json(filter ) :
             pepper = float(data.get('pepper'))
             if salt < 0.01  or salt > 0.4: salt = 0.05
             if pepper < 0.01  or pepper > 0.4: pepper = 0.05
-            print(salt , pepper)
             apply_impulse_noise(salt , pepper)
         
             
             
         case _ :
-            print("filter not done")
             return jsonify({"messege":"filter not yet added"}),202 
         
     return send_file('manipulatedImage.jpg', mimetype='image/jpg' , as_attachment=True ) 
