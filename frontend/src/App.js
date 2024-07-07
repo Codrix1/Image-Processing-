@@ -8,14 +8,19 @@ const App = () => {
   return (
     <div className="App">
       <h1 className="Center">Image Filters</h1>
-      <ImageUpload className="absolute top-50% left-50%" />
-
       <ParticlesComponent id="particles" />
-      
-      <Buttons />
+      <div className="bigger_container">
 
-      <Matching_upload />
+        <div>
+        <Buttons />
+        </div>
 
+        <div  className="Uploaders">
+          <ImageUpload />
+          <Matching_upload />
+        </div>
+        
+      </div>
     </div>
   );
 }

@@ -300,7 +300,7 @@ function Modal({ source }) {
         {renderInputs()}
         <button onClick={handleFetchImage} className="submit-button">Submit</button>
         {loading ? (
-          <div className="loading-icon">Loading...</div> // Replace with an actual loading spinner/icon if needed
+          <div className="loading-icon">Loading...</div> 
         ) : (
           imageUrl && (
             <>

@@ -11,7 +11,7 @@ const ImageUpload = () => {
     }, []);
 
     const fetchImage = () => {
-        fetch('http://127.0.0.1:5000/get_Original')
+        fetch('http://127.0.0.1:5000/get/original')
             .then(response => response.blob())
             .then(blob => {
                 const url = URL.createObjectURL(blob);
@@ -36,7 +36,7 @@ const ImageUpload = () => {
         const formData = new FormData();
         formData.append('file', file);
 
-        fetch('http://127.0.0.1:5000/upload', {
+        fetch('http://127.0.0.1:5000/upload/original', {
             method: 'POST',
             body: formData,
         })
@@ -84,6 +84,7 @@ const ImageUpload = () => {
 
     return (
         <div>
+            <div className="main_Container_image">
             <div className="image-container">
                 <h3 className="Center">Original Image</h3>
                 {imageUrl && <img src={imageUrl} alt="Uploaded" />}
@@ -101,6 +102,7 @@ const ImageUpload = () => {
                 <button className="button_upload n3" onClick={onEditClick}>
                     Apply Filter
                 </button>
+            </div>
             </div>
             {message && <div className="message-popup">{message}</div>}
         </div>

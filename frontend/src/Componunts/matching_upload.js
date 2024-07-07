@@ -13,7 +13,7 @@ const Matching_upload = () => {
     }, []);
 
     const fetchImage = () => {
-        fetch('http://127.0.0.1:5000/get_reference')
+        fetch('http://127.0.0.1:5000/get/reference')
             .then(response => response.blob())
             .then(blob => {
                 const url = URL.createObjectURL(blob);
@@ -38,7 +38,7 @@ const Matching_upload = () => {
         const formData = new FormData();
         formData.append('file', file);
 
-        fetch('http://127.0.0.1:5000/upload_reference', {
+        fetch('http://127.0.0.1:5000/upload/reference', {
             method: 'POST',
             body: formData,
         })
@@ -68,7 +68,9 @@ const Matching_upload = () => {
 
     return (
         <div>
-            <div className="image-container2">
+            <div className="main_Container_image">
+
+            <div className="image-container">
                 <h3 className="Center">Reference Image</h3>
                 {imageUrl && <img src={imageUrl} alt="Uploaded" />}
             </div>
@@ -82,6 +84,8 @@ const Matching_upload = () => {
                 <button className="button_upload n1" onClick={onButtonClick}>
                     Select Reference
                 </button>
+            </div>
+            
             </div>
             {message && <div className="message-popup">{message}</div>}
         </div>

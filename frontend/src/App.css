@@ -9,68 +9,79 @@
   user-select: none; 
   
 }
+.Uploaders{
+  margin-top: -10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.bigger_container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: fit-content;
+}
+.main_Container_image{
+  margin: 20px;
+}
 h1{
   position: absolute;
-  top: 2%;
   left: 42%;
 }
-.under p{
-  z-index: -100;
-}
+
 #particles canvas{
   z-index: -3;
   height:100%;
   width:100%;
   position: absolute;
 }
-
-.main {
-  width: 100%;
-  top: 50%;
+.main_container{
+  margin-top: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+}
+.big_container{
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .containers {
-  width: 42vw;
-  margin-right: 5vw;
-  position: absolute;
+  margin-top: 20px;
+  background-color: blue;
   padding: 15px;
-  top:20%;
-  left: 5%;
   border-radius: 20px;
   background-color: rgba(21, 21, 21, 0);
+  padding: 0 10px;
+}
+
+.Spatial_Domain{
   display: flex;
   justify-content: center;
-  align-items: top;
-  padding: 0 10px;
-  
+  flex-direction: row;
+  flex-wrap: wrap;
 }
-.containers2 {
-  position:absolute;
-  padding: 15px;
-  top:20%;
-  right: 2%;
-  border-radius: 20px;
-  background-color: rgba(245, 230, 211, 0);
+.Frequency_Domain{
   display: flex;
   flex-direction: column;
- 
   
 }
 .sub_containters{
-  border-radius: 20px;
   height: 23%;
-  margin: 2.5%;
+  margin-right: 30px;
   display: flex;
   flex-direction: column;
 }
 
 
 .button {
+  width:auto;
   margin: 10px;
-  background: linear-gradient(to bottom right, #460042c8, #9e3e96);
+  background: linear-gradient(to bottom right, #190184, #4e5dc0);
   border: 0;
   border-radius: 12px;
   color: #FFFFFF;
@@ -93,24 +104,13 @@ h1{
   text-align:center;
 }
 
-.n1{
-  left:2%;
-}
-
-.n2{
-  left:16.7%;
-}
-.n3{
-  left:30%;
-}
 .button_upload{
-  position: absolute;
-  top: 85%;
-  background: linear-gradient(to bottom right, #460042c8, #9e3e96);
+  margin-top: 70px;
+  background: linear-gradient(to bottom right, #190184, #4e5dc0);
   justify-content: center;
   border:none;
   color: #ffffff;
-  margin: 10px;
+  margin-left: 30px;
   cursor: pointer;
   border-radius: 20px;
   display: inline-block;
@@ -128,10 +128,10 @@ h1{
 }
 
 .button:hover {
-  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgb(204, 0, 255), .125rem .125rem 1rem rgb(255, 255, 255);
+  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgb(34, 0, 255), .125rem .125rem 1rem rgb(255, 255, 255);
 }
 .button_upload:hover {
-  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgb(204, 0, 255), .125rem .125rem 1rem rgb(255, 255, 255);
+  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgb(34, 0, 255), .125rem .125rem 1rem rgb(255, 255, 255);
 }
 
 /* Modal.css */
@@ -166,11 +166,11 @@ label {
 .close-button {
   background-color: rgba(255, 255, 255, 0);
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 2px;
+  right: 2px;
   color: rgb(0, 0, 0);
   border: none;
-  border-radius: 10%;
+  border-radius: 30%;
   width: 20px;
   height: 20px;
   display: flex;
@@ -199,19 +199,9 @@ label {
   background-color: darkblue;
 }
 .close-button:hover {
-  background-color: rgb(255, 255, 255);
-  position: absolute;
-  top: 8px;
-  right: 8px;
+  background-color: rgb(255, 0, 0);
   color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 10%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+
 }
 .loading-icon {
   color: black;
@@ -221,51 +211,26 @@ label {
 
 /*--------------------------------------------------------*/
 
-.image-container2 {
-  display: flex;
-  position: absolute;
-  left: 690px;
-  margin-top: 600px;
-  width: 40%;
-  z-index: 50;
-  top: 1%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
 
+.main_Container_image{
+  display: flex;
+  flex-direction: row;
+}
 .image-container {
     display: flex;
-    position: absolute;
-    left: 690px;
-    margin-top: 150px;
-    width: 40%;
-    z-index: 50;
-    top: 1%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
 }
 
-.image-container2 img, .image-container img {
+.image-container img {
     border-radius: 15px;
-    border: 5px solid #e0ade7;
-    margin-top: 1%;
-    align-self: center;
-    justify-content: center;
-    width: 400px;
-    height: auto;
+    border: 5px solid #5451fb;
+    max-width: 400px;
 }
 
 .button-container {
   
     display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin-top: auto;
+    flex-direction: column;
 }
 
 .message-popup {
